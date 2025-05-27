@@ -1,0 +1,67 @@
+import 'package:flutter/material.dart';
+
+class StepWidget extends StatelessWidget {
+  final String stepNumber;
+  final String title;
+  final int stepIndex;
+  final int currentStep;
+  final VoidCallback onTap;
+
+  const StepWidget({
+    Key? key,
+    required this.stepNumber,
+    required this.title,
+    required this.stepIndex,
+    required this.currentStep,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: CircleAvatar(
+            radius: 20, 
+            backgroundColor: currentStep == stepIndex ? Colors.blue : Colors.grey,
+            child: Text(
+              stepNumber,
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        SizedBox(
+          width: 80, 
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: currentStep == stepIndex ? Colors.black : Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class StepLine extends StatelessWidget {
+  final bool isActive;
+
+  const StepLine({Key? key, required this.isActive}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 50, 
+      child: Divider(
+        thickness: 2,
+        color: isActive ? Colors.blue : Colors.grey,
+      ),
+    );
+  }
+}
