@@ -51,7 +51,6 @@ class _LineListPageState extends State<LinePage> {
       backgroundColor: Colors.white,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
-        
           onPressed: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => AiScreen()));
@@ -155,14 +154,65 @@ class _LineListPageState extends State<LinePage> {
               leading: Icon(Icons.track_changes, color: Colors.indigo.shade900),
               trailing: IconButton(
                 onPressed: () async {
-                  final lineName = line.name;
-                  final success =
-                      await createLoanCntrlr.deletLine(line: lineName);
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(
+                        "Delete Line",
+                        style: TextStyle(
+                            fontSize: 20.sp, fontWeight: FontWeight.w400),
+                      ),
+                      content: Text(
+                        "Are you sure you want to delete ?",
+                        style: TextStyle(fontSize: 12.sp),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.pop(context), // Close dialog
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 1.h),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.sp),
+                                color: Colors.grey.withOpacity(0.7)),
+                            child: Text(
+                              'No',
+                              style: TextStyle(
+                                  fontSize: 13.sp, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            final lineName = line.name;
+                            final success = await createLoanCntrlr.deletLine(
+                                line: lineName);
 
-                  setState(() {
-                    createLoanCntrlr.lineList
-                        .removeWhere((item) => item.name == lineName);
-                  });
+                            setState(() {
+                              createLoanCntrlr.lineList
+                                  .removeWhere((item) => item.name == lineName);
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 1.h),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.sp),
+                                color: Colors.red.withOpacity(0.7)),
+                            child: Text(
+                              'Yes',
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
 
                   // ScaffoldMessenger.of(context).showSnackBar(
                   //   SnackBar(

@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:info_fina/sucess_screen/success_screen.dart';
 import 'package:info_fina/model/fullview_customer_model.dart';
 
+
 class CreateLoanController extends GetxController {
   RxList<LineModel> lineList = <LineModel>[].obs;
   RxList<FullViewCustomerModel> customerDetails = <FullViewCustomerModel>[].obs;

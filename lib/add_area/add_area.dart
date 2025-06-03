@@ -74,26 +74,7 @@ class _AddAreaState extends State<AddArea> {
           : Column(
               children: [
                 SizedBox(height: 9.h),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w),
-                  child: TextField(
-                    controller: areaCntrlr,
-                    decoration: InputDecoration(
-                      fillColor: Colors.grey.withOpacity(0.2),
-                      filled: true,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(8.sp),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(8.sp),
-                      ),
-                      hintText: 'Enter Area',
-                      labelText: 'Enter Area',
-                    ),
-                  ),
-                ),
+       
                 SizedBox(height: 1.5.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -130,6 +111,26 @@ class _AddAreaState extends State<AddArea> {
                   ),
                 ),
                 SizedBox(height: 2.h),
+                         Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                  child: TextField(
+                    controller: areaCntrlr,
+                    decoration: InputDecoration(
+                      fillColor: Colors.grey.withOpacity(0.2),
+                      filled: true,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(8.sp),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(8.sp),
+                      ),
+                      hintText: 'Enter Area',
+                      labelText: 'Enter Area',
+                    ),
+                  ),
+                ),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
