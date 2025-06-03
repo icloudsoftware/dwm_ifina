@@ -58,7 +58,7 @@ class _ContraState extends State<Contra> {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => DashboardScree3()),
+                  MaterialPageRoute(builder: (context) => HomePage()),
                 );
               },
             ),

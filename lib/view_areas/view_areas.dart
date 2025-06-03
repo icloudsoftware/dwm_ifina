@@ -61,7 +61,7 @@ class _ViewAreasState extends State<ViewAreas> {
         leading: IconButton(
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => DashboardScree3()));
+                MaterialPageRoute(builder: (context) => HomePage()));
           },
           icon: Icon(
             Icons.home,

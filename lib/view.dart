@@ -56,7 +56,7 @@ class _LOANState extends State<LOAN> {
           child: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>DashboardScree3() ));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage() ));
             },
           ),
         ),

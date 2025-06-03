@@ -268,7 +268,7 @@ class _AddCustomerState extends State<AddCustomer> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => DashboardScree3()));
+                          builder: (context) => HomePage()));
                 },
                 icon: Icon(
                   Icons.home,

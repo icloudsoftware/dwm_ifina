@@ -90,7 +90,7 @@ class _collectionSearchState extends State<collectionSearch> {
         ],
         leading: GestureDetector(
           onTap: () {
-            Get.to(() => DashboardScree3());
+            Get.to(() => HomePage());
           },
           child: Icon(
             Icons.home,
