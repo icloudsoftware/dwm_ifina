@@ -43,18 +43,18 @@ class _ViewAreasState extends State<ViewAreas> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,MaterialPageRoute(builder: (context) => AiScreen()  ));
-        },
-        backgroundColor: Colors.indigo.shade900,
-        child: Image.asset(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AiScreen()));
+          },
+          backgroundColor: Colors.indigo.shade900,
+          child: Image.asset(
             'asset/ai.png',
             color: Colors.white,
             height: 4.5.h,
-          )
-      ),
+          )),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.indigo.shade900,
@@ -160,17 +160,79 @@ class _ViewAreasState extends State<ViewAreas> {
                               ),
                               trailing: IconButton(
                                 onPressed: () async {
-                                  final success = await areaCntrlr.deleteArea(
-                                      area: area, line: entry.key);
-                                  setState(() {
-                                    areaCntrlr.lineAreaData[entry.key]
-                                        ?.remove(area);
-                                    if (areaCntrlr
-                                            .lineAreaData[entry.key]?.isEmpty ??
-                                        false) {
-                                      areaCntrlr.lineAreaData.remove(entry.key);
-                                    }
-                                  });
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text(
+                                        "Delete Area",
+                                        style: TextStyle(
+                                            fontSize: 20.sp,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      content: Text(
+                                        "Are you sure you want to delete ?",
+                                        style: TextStyle(fontSize: 12.sp),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(
+                                              context), // Close dialog
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8.w, vertical: 1.h),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.sp),
+                                                color: Colors.grey
+                                                    .withOpacity(0.7)),
+                                            child: Text(
+                                              'No',
+                                              style: TextStyle(
+                                                  fontSize: 13.sp,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            final success =
+                                                await areaCntrlr.deleteArea(
+                                                    area: area,
+                                                    line: entry.key);
+                                            setState(() {
+                                              areaCntrlr.lineAreaData[entry.key]
+                                                  ?.remove(area);
+                                              if (areaCntrlr
+                                                      .lineAreaData[entry.key]
+                                                      ?.isEmpty ??
+                                                  false) {
+                                                areaCntrlr.lineAreaData
+                                                    .remove(entry.key);
+                                              }
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 8.w, vertical: 1.h),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8.sp),
+                                                color: Colors.red
+                                                    .withOpacity(0.7)),
+                                            child: Text(
+                                              'Yes',
+                                              style: TextStyle(
+                                                fontSize: 13.sp,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
                                   // ScaffoldMessenger.of(context).showSnackBar(
                                   //   SnackBar(
                                   //     content:

@@ -4,10 +4,11 @@ import 'package:lottie/lottie.dart';
 import 'package:bounce/bounce.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:info_fina/receipt/receipt_screen.dart';
+import 'package:easy_url_launcher/easy_url_launcher.dart';
 import 'package:info_fina/controller/search_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:info_fina/profile_fullview/profile_full_view.dart';
-
 
 class searchview extends StatefulWidget {
   String? loanno;
@@ -80,13 +81,13 @@ class _searchviewState extends State<searchview> {
       ),
       body: isLoading
           ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-              ],
-            ),
-          )
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                ],
+              ),
+            )
           : Padding(
               padding: EdgeInsets.all(10.sp),
               child: ListView.builder(
@@ -94,9 +95,14 @@ class _searchviewState extends State<searchview> {
                 itemBuilder: (context, index) {
                   var data = searchController1.someList[index];
                   return Bounce(
-
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> FullProfileView(hpl: data.hpl,loantype: data.loantype,)));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FullProfileView(
+                                    hpl: data.hpl,
+                                    loantype: data.loantype,
+                                  )));
                     },
                     duration: const Duration(milliseconds: 300),
                     child: Card(
@@ -119,20 +125,21 @@ class _searchviewState extends State<searchview> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      SizedBox(height: 1.h),
+                                      Text(
+                                        'Name:  ' '${data.name ?? 'N/A'}',
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 1.h),
                                       Text(
                                         'Loan No: ${data.hpl ?? 'N/A'}',
                                         style: TextStyle(
                                           fontSize: 11.sp,
                                           color: Colors.black,
                                           fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      SizedBox(height: 1.h),
-                                      Text('name:'
-                                        '${data.name?? 'N/A'}',
-                                        style: TextStyle(
-                                          fontSize: 10.sp,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       SizedBox(height: 1.h),
@@ -146,6 +153,65 @@ class _searchviewState extends State<searchview> {
                                     ],
                                   ),
                                 ),
+
+                                Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 3.w),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "₹ ${data.pendingamount ?? 'N/A'}",
+                                        style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      SizedBox(
+                                        height: 2.h,
+                                      ),
+                                      data.status == 'Closed'
+                                          ? Chip(
+                                              color: WidgetStatePropertyAll(
+                                                  Colors.red.withOpacity(0.7)),
+                                              label: Text(
+                                                'Closed',
+                                                style: TextStyle(
+                                                    fontSize: 10.sp,
+                                                    color: Colors.white),
+                                              ))
+                                          : GestureDetector(
+                                              onTap: () {
+                                                Get.to(() => ReceiptScreen(
+                                                          loanNumber: data.hpl,
+                                                          loanType:
+                                                              data.loantype,
+                                                        ))!
+                                                    .then((value) {
+                                                  fetchData();
+                                                });
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 6.w,
+                                                    vertical: 0.9.h),
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        Colors.indigo.shade900,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            3.sp)),
+                                                child: Text(
+                                                  'Pay Now',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                              ),
+                                            )
+                                    ],
+                                  ),
+                                )
                                 // Column(
                                 //   children: [
                                 //     CircleAvatar(
@@ -167,32 +233,39 @@ class _searchviewState extends State<searchview> {
                                   icon: Icons.phone,
                                   label: "Call",
                                   color: Colors.blue,
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    await EasyLauncher.call(
+                                        number: data.pno ?? '');
+                                  },
                                 ),
                                 _buildActionButton(
                                   icon: Icons.message,
                                   label: "Message",
                                   color: Colors.teal,
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    await EasyLauncher.sms(
+                                        number: data.pno ?? '',
+                                        message: data.msg ?? '');
+                                  },
                                 ),
                                 _buildActionButton(
                                   icon: FontAwesomeIcons.whatsapp,
                                   label: "WhatsApp",
                                   color: Colors.green,
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    await EasyLauncher.sendToWhatsApp(
+                                        phone: data.pno ?? '',
+                                        message: data.msg ?? '');
+                                  },
                                 ),
                                 _buildActionButton(
                                   icon: Icons.location_on,
                                   label: "Location",
                                   color: Colors.blue,
-                                  onPressed: () {},
-                                ),
-                                _buildActionButton(
-                                  icon: Icons.receipt,
-                                  label: "Receipt",
-                                  color: Colors.orange,
-                                  onPressed: () {
-                                    _showReceiptDialog(context);
+                                  onPressed: () async {
+                                    String googleMapsUrl =
+                                        'https://www.google.com/maps?q=${data.lat},${data.lang}';
+                                    await EasyLauncher.url(url: googleMapsUrl);
                                   },
                                 ),
                               ],
@@ -233,9 +306,9 @@ class _searchviewState extends State<searchview> {
                   ),
                 ),
                 Divider(),
-                _buildReceiptRow("Name:", "John Doe"),
-                _buildReceiptRow("Loan No:", "LOAN12345"),
-                _buildReceiptRow("Date:", "01/01/2023"),
+                // _buildReceiptRow("Name:", "John Doe"),
+                // _buildReceiptRow("Loan No:", "LOAN12345"),
+                // _buildReceiptRow("Date:", "01/01/2023"),
                 SizedBox(height: 12),
                 Center(
                   child: ElevatedButton(
@@ -275,7 +348,7 @@ class _searchviewState extends State<searchview> {
         ),
       ],
     );
-  }
+  } 
 
   Widget _buildReceiptRow(
     String label,
@@ -314,26 +387,25 @@ class _searchviewState extends State<searchview> {
     String hintText,
   ) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(fontSize: 16)),
-          SizedBox(
-            width: 100,
-            child: TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                hintText: hintText,
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.4.h),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(label, style: TextStyle(fontSize: 16)),
+            SizedBox(
+              width: 100,
+              child: TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: hintText,
+                  border: OutlineInputBorder(),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.4.h),
+                ),
               ),
             ),
-          ),
-        ],
-      )
-    );
+          ],
+        ));
   }
 }

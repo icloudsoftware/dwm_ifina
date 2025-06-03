@@ -40,25 +40,31 @@ class CreateCostomerController extends GetxController {
     }
   }
 
-  Future<void> todayDues() async {
+  Future<void> todayDues({String? date, String? line, String? area}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var scode = await prefs.getString('Scode');
-    var mfin = await prefs.getString('Mfin');
+    var scode = prefs.getString('Scode');
+    var mfin = prefs.getString('Mfin');
+
     Map<String, dynamic> data = {
-      "user": "todaydues",
+      "user": "paydues",
+      "duedate": date,
+      "line": line,
+      "area": area,
       "mfin": mfin,
-      "loantype": "",
-      "scode": scode
+      "scode": scode,
     };
+
+    logger.e(data);
+
     Map<String, dynamic> response =
         await ApiServices.post(slug: ApiConstant.TODAYDUES, body: data);
 
     if (response['success'] == true) {
       logger.e(response);
-
-      duesModelData.value = List<Map<String, dynamic>>.from(response['result'])
-          .map((json) => TodayDuesModel.fromJson(json))
-          .toList();
+      duesModelData.value =
+          List<Map<String, dynamic>>.from(response['result']['loans'])
+              .map((json) => TodayDuesModel.fromJson(json))
+              .toList();
     } else {
       logger.e(response['message']);
     }
@@ -98,8 +104,8 @@ class CreateCostomerController extends GetxController {
           List<Map<String, dynamic>>.from(response['result'])
               .map((json) => CustomerListModel.fromJson(json))
               .toList();
-              logger.w(response);
-    }else{
+      logger.w(response);
+    } else {
       logger.e(response);
     }
   }

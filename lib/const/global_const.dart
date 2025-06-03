@@ -1,4 +1,5 @@
 class ApiConstant {
+  //Api Urls
   static const String BASEURL = "http://162.215.218.106/~ifina/daily/api/";
   static const String LOGIN = "login.php";
   static const String DASHBOARDCOUNT = 'dashboard.php';
@@ -28,7 +29,7 @@ class ApiConstant {
   static const String VIEWLOAN = 'viewloan.php';
   static const String ALLAREA = 'allareas.php';
   static const String ADDCUSTOMER = 'createcust.php';
-  static const String TODAYDUES = 'todaydues.php';
+  static const String TODAYDUES = 'paydues.php';
   static const String GETCUSTOMER = 'getcustomer.php';
   static const String DELETELINE = 'deleteline.php';
   static const String DELETEAREA = 'deletearea.php';
@@ -39,7 +40,6 @@ class ApiConstant {
   static const String SEARCHAPI = 'search.php';
   static const String AI = 'ai.php';
   static const String CUSTOMERLIST = 'listcust.php';
-
   //image
   static const String AIIMAGE = 'asset/ai.png';
 }

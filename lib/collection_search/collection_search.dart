@@ -1,34 +1,58 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 import 'package:info_fina/home.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:info_fina/ai_screen/ai_screen.dart';
+import 'package:info_fina/search_loan/search_loan.dart';
+import 'package:info_fina/collections/collections.dart';
 import 'package:info_fina/CustomersList/view_customers.dart';
+import 'package:info_fina/controller/outstanding_report.dart';
 import 'package:info_fina/controller/create_loans/create_loan_controller.dart';
 
-class SearchCustomers extends StatefulWidget {
-  const SearchCustomers({super.key});
+class collectionSearch extends StatefulWidget {
+  const collectionSearch({super.key});
 
   @override
-  State<SearchCustomers> createState() => _SearchCustomersState();
+  State<collectionSearch> createState() => _collectionSearchState();
 }
 
 var createLoanCntrlr = Get.put(CreateLoanController());
 String? selectedValue;
 String? selectedArea;
 
-class _SearchCustomersState extends State<SearchCustomers> {
-  Future<void> fetchData()async{
-   await createLoanCntrlr.getLines(); 
+class _collectionSearchState extends State<collectionSearch> {
+  DateTime? fromDate;
+  DateTime? toDate;
+  bool isSubmitted = false;
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
+
+  final DateFormat dateFormat = DateFormat('dd-MM-yyyy');
+  // var settlementreportCntrlr = Get.put(OutStandingReportController());
+  Future<void> _pickDate(BuildContext context, bool isStart) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null) {
+      final formattedDate = DateFormat('dd-MM-yyyy').format(picked);
+      setState(() {
+        if (isStart) {
+          fromDate = picked;
+          _startDateController.text = formattedDate;
+        } else {
+          toDate = picked;
+          _endDateController.text = formattedDate;
+        }
+      });
+    }
   }
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  fetchData();
-  }
+
   @override
   Widget build(BuildContext context) {
     List<String> uniqueAreas = createLoanCntrlr.areaList.toSet().toList();
@@ -49,11 +73,33 @@ class _SearchCustomersState extends State<SearchCustomers> {
             height: 4.5.h,
           )),
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
-          Get.to(() => DashboardScree3());
-        }, icon:Icon(Icons.home,size: 18.sp,color: Colors.white,)),
+        actions: [
+              IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => searchLoan1()),
+              );
+            },
+            icon: Icon(
+              Icons.search,
+              size: 25.sp,
+              color: Colors.white,
+            ),
+          ),
+        ],
+        leading: GestureDetector(
+          onTap: () {
+            Get.to(() => DashboardScree3());
+          },
+          child: Icon(
+            Icons.home,
+            size: 18.sp,
+            color: Colors.white,
+          ),
+        ),
         title: Text(
-          'Search Customers',
+          'Search Collections',
           style: TextStyle(
               fontSize: 16.sp,
               color: Colors.white,
@@ -68,6 +114,20 @@ class _SearchCustomersState extends State<SearchCustomers> {
           children: [
             SizedBox(
               height: 13.h,
+            ),
+            TextFormField(
+              readOnly: true,
+              onTap: () => _pickDate(context, true),
+              controller: _startDateController,
+              decoration: InputDecoration(
+                labelText: 'Select Date',
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.sp)),
+                suffixIcon: Icon(Icons.calendar_month),
+              ),
+            ),
+            SizedBox(
+              height: 2.h,
             ),
             DropdownButtonFormField<String>(
               value: lineNames.contains(selectedValue) ? selectedValue : null,
@@ -88,7 +148,6 @@ class _SearchCustomersState extends State<SearchCustomers> {
                   child: Text(name ?? ''),
                 );
               }).toList(),
-          
               onChanged: (String? newValue) async {
                 setState(() {
                   selectedValue = newValue;
@@ -139,8 +198,9 @@ class _SearchCustomersState extends State<SearchCustomers> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ViewCustomers(
+                        builder: (context) => CollectionNew(
                               area: selectedArea,
+                              date: _startDateController.text,
                               line: selectedValue,
                             )));
               },

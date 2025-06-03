@@ -47,13 +47,13 @@ class _ReceiverBubbleWidgetState extends State<ReceiverBubbleWidget> {
             widget.isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           if (!widget.isSender)
-            // ClipRRect(
-            //   borderRadius: BorderRadius.circular(23.sp),
-            //   child: Image.asset(
-            //     'assets/images/ilogo2.jpg',
-            //     height: 4.h,
-            //   ),
-            // ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(23.sp),
+              child: Image.asset(
+                'asset/ilogo2.jpg',
+                height: 4.h,
+              ),
+            ),
           if (!widget.isSender) SizedBox(width: 2.w),
 
           // Message Container

@@ -4,6 +4,7 @@ import 'package:sizer/sizer.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_url_launcher/easy_url_launcher.dart';
+import 'package:info_fina/profile_fullview/profile_full_view.dart';
 import 'package:info_fina/controller/create_loans/create_loan_controller.dart';
 
 class LoanList extends StatefulWidget {
@@ -74,7 +75,15 @@ class _LoanListState extends State<LoanList> {
             child: Column(
               children: List.generate(
                 createLoan.viewLoanModel.length,
-                (index) => _buildLoanCard(index),
+                (index) => GestureDetector(
+                    onTap: () {
+                      Get.to(() => FullProfileView(
+                            hpl: createLoan.viewLoanModel[index].hpl ?? '',
+                            loantype:
+                                createLoan.viewLoanModel[index].loantype ?? '',
+                          ));
+                    },
+                    child: _buildLoanCard(index)),
               ),
             ),
           ),

@@ -16,13 +16,14 @@ class CreateLoan extends StatefulWidget {
   String? pno;
   String? line;
   String? area;
-
+  String? cid;
   CreateLoan(
       {this.isBlank = true,
       this.name,
       this.line,
       this.area,
       this.pno,
+      this.cid,
       super.key});
 
   @override
@@ -31,6 +32,7 @@ class CreateLoan extends StatefulWidget {
 
 class _CreateLoanState extends State<CreateLoan> {
   // Controllers
+
   final TextEditingController interestController = TextEditingController();
   final TextEditingController loanAmountController = TextEditingController();
   final TextEditingController givenAmountController = TextEditingController();
@@ -53,6 +55,7 @@ class _CreateLoanState extends State<CreateLoan> {
   final TextEditingController addressCntrlr = TextEditingController();
   final TextEditingController lineCntrlr = TextEditingController();
   final TextEditingController areaCntrlr = TextEditingController();
+  final TextEditingController cidCntrlr = TextEditingController();
 
   bool isloading = false;
   String selectedLoanType = "DAILY";
@@ -114,23 +117,28 @@ class _CreateLoanState extends State<CreateLoan> {
     });
   }
 
+  FocusNode givenAmountFocusNode = FocusNode();
+
   void calculateLoanDetails() {
-    final double L = double.tryParse(loanAmountController.text) ?? 0.0;
-    final double I = double.tryParse(interestController.text) ?? 0.0;
-    final int D = int.tryParse(tenureController.text) ?? 0;
+    final double loanAmount = double.tryParse(loanAmountController.text) ?? 0.0;
+    final double givenAmount =
+        double.tryParse(givenAmountController.text) ?? 0.0;
+    final int tenure = int.tryParse(tenureController.text) ?? 0;
 
-    if (L > 0 && I > 0 && D > 0) {
-      final double preInterest = (L * I) / 100;
-      final double givenLoan = L - preInterest;
-      final int totalPeriods = D;
-
-      final double principalPart = givenLoan / totalPeriods;
-      final double interestPartPerDue = preInterest / totalPeriods;
+    if (loanAmount > 0 &&
+        givenAmount > 0 &&
+        tenure > 0 &&
+        givenAmount < loanAmount) {
+      final double preInterest = loanAmount - givenAmount;
+      final double interestRate = (preInterest / loanAmount) * 100;
+      final double principalPart = givenAmount / tenure;
+      final double interestPartPerDue = preInterest / tenure;
       final double totalDuePerDue = principalPart + interestPartPerDue;
 
-      setState(() {
+      // This will update UI safely without removing focus
+      Future.microtask(() {
+        interestController.text = interestRate.toStringAsFixed(2);
         preIntAmountController.text = preInterest.toStringAsFixed(2);
-        givenAmountController.text = givenLoan.toStringAsFixed(2);
         principalPartController.text = principalPart.toStringAsFixed(2);
         interestPartController.text = interestPartPerDue.toStringAsFixed(2);
         totalDueController.text = totalDuePerDue.toStringAsFixed(2);
@@ -141,13 +149,20 @@ class _CreateLoanState extends State<CreateLoan> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getCurrentLocation();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   _getCurrentLocation();
+
     nameCntrlr.text = widget.name ?? '';
     phoneCntrlr.text = widget.pno ?? '';
     lineCntrlr.text = widget.line ?? '';
     areaCntrlr.text = widget.area ?? '';
+    cidCntrlr.text = widget.cid ?? '';
+  }
+
+  @override
+  void dispose() {
+    givenAmountFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -199,22 +214,6 @@ class _CreateLoanState extends State<CreateLoan> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // SizedBox(height: 2.h),
-                      // Text(
-                      //   'Profile',
-                      //   style: TextStyle(
-                      //       fontSize: 16.sp, fontWeight: FontWeight.w500),
-                      // ),
-                      // SizedBox(
-                      //   height: 1.h,
-                      // ),
-                      // Center(
-                      //     child: ClipRRect(
-                      //         borderRadius: BorderRadius.circular(10.sp),
-                      //         child: Image.network(
-                      //           'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
-                      //           height: 20.h,
-                      //         ))),
                       SizedBox(
                         height: 2.h,
                       ),
@@ -303,7 +302,6 @@ class _CreateLoanState extends State<CreateLoan> {
                           label: 'Name',
                           controller: nameCntrlr,
                           readOnly: true),
-
                       buildTextFormField(
                           label: 'Phone No',
                           keyboardType: TextInputType.number,
@@ -319,40 +317,10 @@ class _CreateLoanState extends State<CreateLoan> {
                             return null;
                           },
                           readOnly: true),
-
-                      // SizedBox(
-                      //   height: 2.h,
-                      // ),
-                      // buildTextFormField(
-                      //   maxLines: 4,
-                      //   controller: addressCntrlr,
-                      //   label: 'Address',
-                      //   // validator: (value) {
-                      //   //   if (value == null || value.isEmpty) {
-                      //   //     return 'Field should not empty';
-                      //   //   }
-                      //   // },
-                      // ),
-                      // buildTextFormField(
-                      //   label: 'Line Number',
-                      //   // validator: (value) {
-                      //   //   if (value == null || value.isEmpty) {
-                      //   //     return 'Field should not empty';
-                      //   //   }
-                      //   // }),
-                      // ),
-                      // buildTextFormField(
-                      //     label: 'Latitude', controller: _latitudeController),
-                      // buildTextFormField(
-                      //     label: 'Longitude', controller: _longitudeController),
-                      // buildTextFormField(
-                      //     autoValidate: AutovalidateMode.onUserInteraction,
-                      //     label: 'Aadhaar Number',
-                      //     controller: aadharcntrlr),
+                      buildTextFormField(
+                          label: 'cid', controller: cidCntrlr, readOnly: true),
                       SizedBox(height: 1.h),
-
                       SizedBox(height: 1.h),
-
                       _buildSectionTitle("Loan Details"),
                       SizedBox(height: 2.h),
                       buildDropdownField(),
@@ -362,21 +330,16 @@ class _CreateLoanState extends State<CreateLoan> {
                           return 'Field should not empty';
                         }
                         return null;
-                      }),
-                      buildTextFormFieldWithController(
-                          "Interest%", interestController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                        return null;
-                      }),
+                      },
+                          keyboardType: TextInputType.number,
+                          focusNode: givenAmountFocusNode),
                       buildTextFormFieldWithController(
                           "Given Amount", givenAmountController, (value) {
                         if (value == null || value.isEmpty) {
                           return 'Field should not empty';
                         }
                         return null;
-                      }),
+                      }, keyboardType: TextInputType.number),
                       buildTextFormFieldWithController(
                           "Repayment Period", tenureController, (value) {
                         if (value == null || value.isEmpty) {
@@ -444,9 +407,9 @@ class _CreateLoanState extends State<CreateLoan> {
                       ),
                       buildTextFormFieldWithController(
                           "Remarks", remarksController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
+                        // if (value == null || value.isEmpty) {
+                        //   return 'Field should not empty';
+                        // }
                       }, isMultiline: true),
                       SizedBox(
                         height: 1.h,
@@ -465,6 +428,7 @@ class _CreateLoanState extends State<CreateLoan> {
                               var mfin = await prefs.getString('Mfin');
                               Map<String, dynamic> data = {
                                 "loantype": selectedLoanType,
+                                'cid': cidCntrlr.text,
                                 "totalhpamt": loanAmountController.value.text,
                                 "interest": interestController.value.text,
                                 "inter": interestPartController.value.text,
@@ -473,8 +437,12 @@ class _CreateLoanState extends State<CreateLoan> {
                                 "dueamt": principalPartController.value.text,
                                 "name": nameCntrlr.value.text,
                                 "pno": phoneCntrlr.value.text,
-                                "area": selectedArea,
-                                "model": selectedValue,
+                                "area": widget.isBlank == false
+                                    ? selectedArea
+                                    : areaCntrlr.text,
+                                "model": widget.isBlank == false
+                                    ? selectedValue
+                                    : lineCntrlr.text,
                                 "lat": _latitudeController.text,
                                 "lang": _longitudeController.text,
                                 "mfin": mfin,
@@ -491,20 +459,6 @@ class _CreateLoanState extends State<CreateLoan> {
                               await Future.delayed(Duration(seconds: 2));
                               Navigator.pop(context);
                               await createLoanCntrlr.createLoan(data: data);
-
-                              // Hide the loader
-
-                              // Clear form fields
-                              interestController.clear();
-                              nameCntrlr.clear();
-                              interestPartController.clear();
-                              givenAmountController.clear();
-                              loanAmountController.clear();
-                              duescontroller.clear();
-                              principalPartController.clear();
-                              phoneCntrlr.clear();
-                              remarksController.clear();
-                              selectedArea = null;
                             }
                           },
                           child: Container(
@@ -569,13 +523,16 @@ class _CreateLoanState extends State<CreateLoan> {
 
   Widget buildTextFormFieldWithController(String label,
       TextEditingController controller, String? Function(String?)? validator,
-      {bool isMultiline = false}) {
+      {bool isMultiline = false,
+      TextInputType keyboardType = TextInputType.text,
+      FocusNode? focusNode}) {
     return Padding(
       padding: EdgeInsets.only(bottom: 15),
       child: TextFormField(
         controller: controller,
         validator: validator,
         maxLines: isMultiline ? 3 : 1,
+        keyboardType: keyboardType,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(),
@@ -606,6 +563,7 @@ class _CreateLoanState extends State<CreateLoan> {
             } else if (selectedLoanType == "MONTHLY") {
               tenureController.text = "12";
             }
+            calculateLoanDetails(); // Trigger auto calculation
           });
           logger.e(selectedLoanType);
         },

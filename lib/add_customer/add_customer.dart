@@ -241,18 +241,18 @@ class _AddCustomerState extends State<AddCustomer> {
         createLoanCntrlr.lineList.map((e) => e.name).toSet().toList();
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,MaterialPageRoute(builder: (context) => AiScreen()));
-        },
-        backgroundColor: Colors.indigo.shade900,
-        child:Image.asset(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AiScreen()));
+          },
+          backgroundColor: Colors.indigo.shade900,
+          child: Image.asset(
             'asset/ai.png',
             color: Colors.white,
             height: 4.5.h,
-          )
-      ),
+          )),
       appBar: AppBar(
         leading: widget.isback == true
             ? IconButton(
@@ -278,24 +278,7 @@ class _AddCustomerState extends State<AddCustomer> {
             style: TextStyle(
               color: Colors.white,
             )),
-        actions: [
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: TextButton(
-          //     onPressed: _saveCustomer,
-          //     style: TextButton.styleFrom(
-          //       backgroundColor: Colors.grey.shade200,
-          //       padding: EdgeInsets.symmetric(horizontal: 16),
-          //       minimumSize: Size(100, 50),
-          //     ),
-          //     child: Text(
-          //       "Save",
-          //       style: TextStyle(
-          //           color: Color(0xFF17358B), fontWeight: FontWeight.bold),
-          //     ),
-          //   ),
-          // )
-        ],
+        actions: [],
         backgroundColor: Color(0xFF17358B),
       ),
       body: SingleChildScrollView(
@@ -671,7 +654,8 @@ class _AddCustomerState extends State<AddCustomer> {
                   "area": selectedArea,
                   "npnoresi": selectedMapAddress,
                   "nada": selectedIdType,
-                  "nbba": selectedLine,
+                  // "nbba": selectedLine,
+                  'line': selectedLine,
                   "lat": lattitudecon.text,
                   "lang": longitudecon.text,
                   'status': selectedStatus,

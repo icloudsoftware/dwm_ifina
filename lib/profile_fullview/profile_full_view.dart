@@ -177,17 +177,11 @@ class _FullProfileViewState extends State<FullProfileView> {
                       children: [
                         Column(
                           children: [
-                            // customerCntrlr.customerDetails.value. != ''
-                            //     ? CircleAvatar(
-                            //         radius: 3.h,
-                            //         backgroundImage: NetworkImage(
-                            //             'http://ayanvinayaga.ifon.in/user/${areacocontrol.profileModel.value.uimg}'),
-                            //       )
-                            //     : CircleAvatar(
-                            //         radius: 3.h,
-                            //         backgroundImage: AssetImage(
-                            //             'assets/images/empty_person.jpg'),
-                            //       ),
+                            CircleAvatar(
+                              radius: 3.h,
+                              backgroundImage: NetworkImage(
+                                  'https://img.freepik.com/free-vector/mans-face-flat-style_90220-2877.jpg?semt=ais_hybrid&w=740'),
+                            ),
                             customerCntrlr.customerDetails.value.firstOrNull
                                         ?.status
                                         ?.toLowerCase() ==
@@ -205,9 +199,7 @@ class _FullProfileViewState extends State<FullProfileView> {
                                 : Container()
                           ],
                         ),
-                        SizedBox(
-                          width: 2.w,
-                        ),
+
                         _iconButton(
                             Icons.phone,
                             "Call",
@@ -346,7 +338,7 @@ class _FullProfileViewState extends State<FullProfileView> {
                     _infoRow(
                         "Name",
                         customerCntrlr
-                                .customerDetails.value.firstOrNull?.fname ??
+                                .customerDetails.value.firstOrNull?.name ??
                             ''),
                     _infoRow(
                         "Address",
@@ -366,19 +358,19 @@ class _FullProfileViewState extends State<FullProfileView> {
                         [
                           customerCntrlr.customerDetails.value.firstOrNull
                                   ?.oaddress ??
-                              '',
+                              'N/A',
                           customerCntrlr.customerDetails.value.firstOrNull
                                   ?.oaddress1 ??
-                              '',
+                              'N/A',
                           customerCntrlr.customerDetails.value.firstOrNull
                                   ?.oaddress2 ??
-                              '',
+                              'n/A',
                         ].where((element) => element.isNotEmpty).join(', ')),
                     _infoRow(
                         "Area",
                         customerCntrlr
                                 .customerDetails.value.firstOrNull?.area ??
-                            ''),
+                            'N/A'),
                     _infoRow(
                         "Profession",
                         customerCntrlr.customerDetails.value.firstOrNull
@@ -387,49 +379,42 @@ class _FullProfileViewState extends State<FullProfileView> {
                     _infoRow(
                         "phone",
                         customerCntrlr.customerDetails.value.firstOrNull?.pno ??
-                            ''),
+                            'N/A'),
                     _infoRow(
                         "phone Office",
                         customerCntrlr
                                 .customerDetails.value.firstOrNull?.pnooffice ??
-                            ''),
+                            'N/A'),
                     _infoRow(
                         "phone Residency",
                         customerCntrlr
                                 .customerDetails.value.firstOrNull?.pnoresi ??
-                            ''),
+                            'N/A'),
                     _infoRow(
                         "Response Date",
                         customerCntrlr
                                 .customerDetails.value.firstOrNull?.rdate ??
-                            ''),
+                            'N/A'),
                     _infoRow(
                         "Remarks",
                         customerCntrlr
                                 .customerDetails.value.firstOrNull?.remarks ??
-                            ''),
+                            'N/A'),
                     _infoRow(
                         "My Remarks",
                         customerCntrlr
                                 .customerDetails.value.firstOrNull?.remarks ??
-                            ''),
+                            'N/A'),
                   ]),
                   SizedBox(height: 2.h),
                   _buildCard("Co-Obligant Details", [
                     // Add spacing between image and text
                     Column(
                       children: [
-                        // customerCntrlr
-                        //                           .customerDetails.value.firstOrNull?.img != ''
-                        //     ? CircleAvatar(
-                        //         radius: 4.h,
-                        //         backgroundImage: NetworkImage(
-                        //             'http://ayanvinayaga.ifon.in/user${areacocontrol.profileModel.value.img}'))
-                        //     : CircleAvatar(
-                        //         radius: 4.h,
-                        //         backgroundImage: AssetImage(
-                        //             'assets/images/empty_person.jpg'),
-                        //       ),
+                        CircleAvatar(
+                            radius: 3.h,
+                            backgroundImage: NetworkImage(
+                                'https://img.freepik.com/free-vector/mans-face-flat-style_90220-2877.jpg?semt=ais_hybrid&w=740')),
                         SizedBox(
                           height: 2.h,
                         ),
@@ -437,24 +422,24 @@ class _FullProfileViewState extends State<FullProfileView> {
                             "Name",
                             customerCntrlr.customerDetails.value.firstOrNull
                                     ?.cobname ??
-                                ''),
+                                'N/A'),
                         _infoRow(
                             "Phone",
                             customerCntrlr.customerDetails.value.firstOrNull
                                     ?.cobpno ??
-                                ''),
+                                'N/A'),
                         _infoRow(
                             "Address",
                             [
                               customerCntrlr
                                       .customerDetails.value.firstOrNull?.co ??
-                                  '',
+                                  'N/A',
                               customerCntrlr.customerDetails.value.firstOrNull
                                       ?.co01 ??
-                                  '',
+                                  'N/A',
                               customerCntrlr.customerDetails.value.firstOrNull
                                       ?.co02 ??
-                                  '',
+                                  'N/A',
                             ]
                                 .where((element) => element.isNotEmpty)
                                 .join(', ')),
@@ -463,13 +448,13 @@ class _FullProfileViewState extends State<FullProfileView> {
                             [
                               customerCntrlr
                                       .customerDetails.value.firstOrNull?.cow ??
-                                  '',
+                                  'N/A',
                               customerCntrlr.customerDetails.value.firstOrNull
                                       ?.cow01 ??
-                                  '',
+                                  'N/A',
                               customerCntrlr.customerDetails.value.firstOrNull
                                       ?.cow2 ??
-                                  '',
+                                  'N/A',
                             ]
                                 .where((element) => element.isNotEmpty)
                                 .join(', ')),
@@ -477,98 +462,89 @@ class _FullProfileViewState extends State<FullProfileView> {
                             "Ref Phone No",
                             customerCntrlr.customerDetails.value.firstOrNull
                                     ?.cobpno11 ??
-                                ''),
+                                'N/A'),
                       ],
                     ),
                   ]),
 
                   SizedBox(height: 2.h),
-                  _buildCard("Vehicle Details", [
-                    _infoRow(
-                        "Vehicle No.",
-                        customerCntrlr.customerDetails.value.firstOrNull?.vno ??
-                            ''),
-                    _infoRow(
-                        "Vehicle Name",
-                        customerCntrlr
-                                .customerDetails.value.firstOrNull?.vname ??
-                            ''),
-                    _infoRow(
-                        "Model",
-                        customerCntrlr
-                                .customerDetails.value.firstOrNull?.model ??
-                            ''),
-                    _infoRow(
-                        "color",
-                        customerCntrlr
-                                .customerDetails.value.firstOrNull?.color ??
-                            ''),
-                    _infoRow(
-                        "Broker Select",
-                        customerCntrlr
-                                .customerDetails.value.firstOrNull?.bname ??
-                            ''),
-                  ]),
+                  // _buildCard("Vehicle Details", [
+                  //   _infoRow(
+                  //       "Vehicle No.",
+                  //       customerCntrlr.customerDetails.value.firstOrNull?.vno ??
+                  //           ''),
+                  //   _infoRow(
+                  //       "Vehicle Name",
+                  //       customerCntrlr
+                  //               .customerDetails.value.firstOrNull?.vname ??
+                  //           ''),
+                  //   _infoRow(
+                  //       "Model",
+                  //       customerCntrlr
+                  //               .customerDetails.value.firstOrNull?.model ??
+                  //           ''),
+                  //   _infoRow(
+                  //       "color",
+                  //       customerCntrlr
+                  //               .customerDetails.value.firstOrNull?.color ??
+                  //           ''),
+                  //   _infoRow(
+                  //       "Broker Select",
+                  //       customerCntrlr
+                  //               .customerDetails.value.firstOrNull?.bname ??
+                  //           ''),
+                  // ]),
                   SizedBox(height: 2.h),
-                  customerCntrlr.customerDetails.value.firstOrNull?.vno != ''
-                      ? _buildCard("Loan Details", [
-                          _infoRow(
-                              "Loan Type.",
-                              customerCntrlr.customerDetails.value.firstOrNull
-                                      ?.vname ??
-                                  ''),
-                          _infoRow(
-                              "Loan No.",
-                              customerCntrlr
-                                      .customerDetails.value.firstOrNull?.hpl ??
-                                  ''),
-                          _infoRow(
-                              "Loan Date",
-                              customerCntrlr.customerDetails.value.firstOrNull
-                                      ?.hpdate ??
-                                  ''),
-                          _infoRow(
-                              "Loan Amount",
-                              customerCntrlr.customerDetails.value.firstOrNull
-                                      ?.dueamt ??
-                                  ''),
-                          _infoRow(
-                              "Due Amount",
-                              customerCntrlr.customerDetails.value.firstOrNull
-                                      ?.dueamt ??
-                                  ''),
-                          _infoRow(
-                              "Total Dues",
-                              customerCntrlr.customerDetails.value.firstOrNull
-                                      ?.duemnt ??
-                                  ''),
-                          _infoRow(
-                              "Paid Dues",
-                              customerCntrlr.customerDetails.value.firstOrNull
-                                      ?.duemnt ??
-                                  ''),
-                          // _infoRow("Pending Amount",
-                          //     customerCntrlr
-                          //                               .customerDetails.value.firstOrNull?.pnom ?? ''),
-                          // _infoRow("Pending Dues",
-                          //     customerCntrlr
-                          //                               .customerDetails.value.firstOrNull?.pendmnt ?? ' '),
 
-                          // _infoRow("Def Amount",
-                          //     areacocontrol.profileModel.value.defamt ?? ''),
-                          _infoRow(
-                              "Total  pending",
-                              customerCntrlr.customerDetails.value.firstOrNull
-                                      ?.total ??
-                                  ''),
-                          //    _infoRow("Last Paid",
-                          // areacocontrol.profileModel.value.lddate ?? ''),
-                          // _infoRow("Last Paid Date",
-                          //     areacocontrol.profileModel.value.lddate ?? ''),
-                          // _infoRow("Closing Amt",
-                          //     areacocontrol.profileModel.value.tpdue ?? ''),
-                        ])
-                      : SizedBox.shrink(),
+                  _buildCard("Loan Details", [
+                    _infoRow(
+                        "Loan Type.",
+                        customerCntrlr
+                                .customerDetails.value.firstOrNull?.loantype ??
+                            'N/A'),
+                    _infoRow(
+                        "Loan No.",
+                        customerCntrlr.customerDetails.value.firstOrNull?.hpl ??
+                            'N/A'),
+                    _infoRow(
+                        "Loan Date",
+                        customerCntrlr
+                                .customerDetails.value.firstOrNull?.hpdate ??
+                            'N/A'),
+                    _infoRow(
+                        "Loan Amount",
+                        customerCntrlr.customerDetails.value.firstOrNull
+                                ?.hpamount ??
+                            'N/A'),
+                    _infoRow(
+                        "Due Amount",
+                        customerCntrlr
+                                .customerDetails.value.firstOrNull?.dueamt ??
+                            'N/A'),
+                    _infoRow(
+                        "Total Dues",
+                        customerCntrlr
+                                .customerDetails.value.firstOrNull?.duemnt ??
+                            'N/A'),
+                    _infoRow(
+                        "Paid Dues",
+                        customerCntrlr
+                                .customerDetails.value.firstOrNull?.duemnt ??
+                            'N/A'),
+
+                    _infoRow(
+                        "Total  pending",
+                        customerCntrlr
+                                .customerDetails.value.firstOrNull?.total ??
+                            ''),
+                    //    _infoRow("Last Paid",
+                    // areacocontrol.profileModel.value.lddate ?? ''),
+                    // _infoRow("Last Paid Date",
+                    //     areacocontrol.profileModel.value.lddate ?? ''),
+                    // _infoRow("Closing Amt",
+                    //     areacocontrol.profileModel.value.tpdue ?? ''),
+                  ]),
+
                   SizedBox(height: 3.h), // Space for floating button
                 ],
               ),

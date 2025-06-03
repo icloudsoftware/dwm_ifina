@@ -20,12 +20,11 @@ var createLoanCntrlr = Get.put(CreateLoanController());
 final customerlistCntrlr = Get.put(CreateCostomerController());
 
 class _ViewCustomersState extends State<ViewCustomers> {
-  
   bool isLoading = true;
 
   Future<void> fetchData() async {
     setState(() => isLoading = true);
-    await customerlistCntrlr.getCustomers(area:widget.area, line:widget.line);
+    await customerlistCntrlr.getCustomers(area: widget.area, line: widget.line);
     setState(() => isLoading = false);
   }
 
@@ -35,11 +34,10 @@ class _ViewCustomersState extends State<ViewCustomers> {
     fetchData();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -62,8 +60,6 @@ class _ViewCustomersState extends State<ViewCustomers> {
           )
         ],
       ),
-
-
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : customerlistCntrlr.customerListData.isEmpty
@@ -144,6 +140,7 @@ class _ViewCustomersState extends State<ViewCustomers> {
                                         pno: customer.pno,
                                         area: widget.area,
                                         line: widget.line,
+                                        cid: customer.cid,
                                       ),
                                     ),
                                   );
@@ -174,7 +171,11 @@ class _ViewCustomersState extends State<ViewCustomers> {
                               ),
                               SizedBox(height: 1.h),
                               GestureDetector(
-                                onTap: () {
+                                onTap: () async {
+                                  await createLoanCntrlr.deleteCustomer(
+                                    id: customer.id,
+                                  );
+                                  fetchData();
                                   // TODO: Add delete functionality
                                 },
                                 child: Container(

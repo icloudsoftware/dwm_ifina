@@ -1,12 +1,9 @@
-import 'package:info_fina/auth/Login.dart';
-import 'package:info_fina/home.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:info_fina/splash.dart';
 import 'package:get/route_manager.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:info_fina/services/update_service.dart';
-import 'package:info_fina/sucess_screen/success_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding

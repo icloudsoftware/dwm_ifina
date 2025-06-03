@@ -16,6 +16,7 @@ import 'package:info_fina/New_employee.dart';
 import 'package:info_fina/New_employee2.dart';
 import 'package:info_fina/add_area/add_area.dart';
 import 'package:info_fina/add_line/add_line.dart';
+import 'package:info_fina/ai_screen/ai_screen.dart';
 import 'package:info_fina/view_loan/view_loan.dart';
 import 'package:info_fina/line_view/line_list.dart';
 import 'package:info_fina/view_loan/search_loan.dart';
@@ -34,6 +35,7 @@ import 'package:info_fina/statement_report/statement_report.dart';
 import 'package:info_fina/closedloans_report/closed_loans_mc.dart';
 import 'package:info_fina/closedloans_report/closed_loans_wc.dart';
 import 'package:info_fina/closedloans_report/closed_loans_dc.dart';
+import 'package:info_fina/collection_search/collection_search.dart';
 import 'package:info_fina/outstanding_report/outstanding_report.dart';
 import 'package:info_fina/pre_loan_processing/pre_loan_processing.dart';
 import 'package:info_fina/monthly_loan_create/monthly_create_loan.dart';
@@ -218,29 +220,25 @@ class _DashboardScree3State extends State<DashboardScree3> {
       backgroundColor: Colors.white,
       extendBody: true,
       drawer: CustomDrawer(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        height: 15.h,
-        width: 17.w,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.indigo.shade900, width: 3),
-        ),
-        child: FloatingActionButton(
-          onPressed: _openCollectionNew,
-          backgroundColor: Colors.white,
-          elevation: 12,
-          shape: CircleBorder(),
-          child: Icon(Icons.search, size: 40, color: Colors.indigo),
-        ),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AiScreen()));
+          },
+          backgroundColor: Colors.indigo.shade900,
+          child: Image.asset(
+            'asset/ai.png',
+            color: Colors.white,
+            height: 4.5.h,
+          )),
       body: _showCollectionNew
           ? WillPopScope(
               onWillPop: () async {
                 _closeCollectionNew();
                 return false;
               },
-              child: CollectionNew(),
+              child: collectionSearch(),
             )
           : _selectedIndex == 3
               ? _DashboardContentWithAppBar(
@@ -249,32 +247,32 @@ class _DashboardScree3State extends State<DashboardScree3> {
                   scaffoldKey: _scaffoldKey,
                 )
               : _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.indigo.shade900,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.line_axis_rounded),
-            label: "Line",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.area_chart),
-            label: "Area",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Customer",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_outlined),
-            label: "Loan",
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      //   selectedItemColor: Colors.white,
+      //   unselectedItemColor: Colors.grey,
+      //   backgroundColor: Colors.indigo.shade900,
+      //   type: BottomNavigationBarType.fixed,
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.line_axis_rounded),
+      //       label: "Line",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.area_chart),
+      //       label: "Area",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: "Customer",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.account_balance_outlined),
+      //       label: "Loan",
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
@@ -398,37 +396,37 @@ class CustomDrawer extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-              Positioned(
-                bottom: 9,
-                child: Container(
-                  width: 250,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.white70,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    style: TextStyle(fontSize: 14),
-                    decoration: InputDecoration(
-                      hintText: "Search A/C No or Loan No",
-                      hintStyle: TextStyle(color: Colors.black, fontSize: 12),
-                      border: InputBorder.none,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                      suffixIcon:
-                          Icon(Icons.search, color: Colors.black, size: 20),
-                    ),
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   bottom: 9,
+              //   child: Container(
+              //     width: 250,
+              //     height: 40,
+              //     decoration: BoxDecoration(
+              //       color: Colors.white70,
+              //       borderRadius: BorderRadius.circular(8),
+              //       border: Border.all(color: Colors.grey.shade300),
+              //       boxShadow: [
+              //         BoxShadow(
+              //           color: Colors.black12,
+              //           blurRadius: 4,
+              //           offset: Offset(0, 2),
+              //         ),
+              //       ],
+              //     ),
+              //     child: TextField(
+              //       style: TextStyle(fontSize: 14),
+              //       decoration: InputDecoration(
+              //         hintText: "Search A/C No or Loan No",
+              //         hintStyle: TextStyle(color: Colors.black, fontSize: 12),
+              //         border: InputBorder.none,
+              //         contentPadding:
+              //             EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+              //         suffixIcon:
+              //             Icon(Icons.search, color: Colors.black, size: 20),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
           Expanded(
@@ -778,6 +776,8 @@ class CustomDrawer extends StatelessWidget {
     } else if (title == 'View Customer') {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => GetCustomer()));
+    } else if (title == 'Create Customer') {
+      Get.to(() => AddCustomer());
     }
   }
 }
