@@ -117,9 +117,7 @@ class CustomerCard extends StatelessWidget {
                 SizedBox(height: 24), // To make space for the cancel button
                 _info("Customer: ", customer.name ?? "N/A"),
                 _info("Phone: ", customer.pno ?? "N/A"),
-                _info("Loan : ", customer.hpl ?? customer.hplt ?? "N/A"),
-                _info("Amount: ", "₹${customer.houserent ?? '0'}"),
-                _info("Due Date: ", customer.rdate ?? "N/A"),
+
                 SizedBox(height: 2.h),
                 Row(
                   children: [
@@ -137,6 +135,9 @@ class CustomerCard extends StatelessWidget {
                             builder: (context) => CreateLoan(
                               name: customer.name,
                               pno: customer.pno,
+                              area: customer.area,
+                              line: customer.line,
+                              isBlank: true,
                             ),
                           ),
                         );

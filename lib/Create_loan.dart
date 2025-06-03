@@ -16,13 +16,14 @@ class CreateLoan extends StatefulWidget {
   String? pno;
   String? line;
   String? area;
-
+  String? cid;
   CreateLoan(
       {this.isBlank = true,
       this.name,
       this.line,
       this.area,
       this.pno,
+      this.cid,
       super.key});
 
   @override
@@ -39,13 +40,10 @@ class _CreateLoanState extends State<CreateLoan> {
   final TextEditingController principalPartController = TextEditingController();
   final TextEditingController interestPartController = TextEditingController();
   final TextEditingController totalDueController = TextEditingController();
-  final TextEditingController payModeController = TextEditingController();
   final TextEditingController documentationChargeController =
       TextEditingController();
   final TextEditingController remarksController = TextEditingController();
   final TextEditingController aadharcntrlr = TextEditingController();
-
-  final TextEditingController duescontroller = TextEditingController();
   final TextEditingController _latitudeController = TextEditingController();
   final TextEditingController _longitudeController = TextEditingController();
   final TextEditingController nameCntrlr = TextEditingController();
@@ -53,6 +51,7 @@ class _CreateLoanState extends State<CreateLoan> {
   final TextEditingController addressCntrlr = TextEditingController();
   final TextEditingController lineCntrlr = TextEditingController();
   final TextEditingController areaCntrlr = TextEditingController();
+  final TextEditingController cidCntrlr = TextEditingController();
 
   bool isloading = false;
   String selectedLoanType = "DAILY";
@@ -64,10 +63,8 @@ class _CreateLoanState extends State<CreateLoan> {
   var createLoanCntrlr = Get.put(CreateLoanController());
   String? selectedValue;
   String? selectedArea;
-  final List<String> options = [
-    'Cash A/c',
-    'Bank',
-  ];
+  final List<String> options = ['Cash A/c', 'Bank'];
+
   Future<void> fetchData() async {
     setState(() {
       isloading = true;
@@ -115,26 +112,36 @@ class _CreateLoanState extends State<CreateLoan> {
   }
 
   void calculateLoanDetails() {
-    final double L = double.tryParse(loanAmountController.text) ?? 0.0;
-    final double I = double.tryParse(interestController.text) ?? 0.0;
-    final int D = int.tryParse(tenureController.text) ?? 0;
+    final double loanAmount = double.tryParse(loanAmountController.text) ?? 0.0;
+    final double givenAmount =
+        double.tryParse(givenAmountController.text) ?? 0.0;
+    final int tenure = int.tryParse(tenureController.text) ?? 0;
 
-    if (L > 0 && I > 0 && D > 0) {
-      final double preInterest = (L * I) / 100;
-      final double givenLoan = L - preInterest;
-      final int totalPeriods = D;
+    if (loanAmount > 0 && givenAmount > 0 && tenure > 0) {
+      if (givenAmount < loanAmount) {
+        final double preInterest = loanAmount - givenAmount;
+        final double interestRate = (preInterest / loanAmount) * 100;
+        final double principalPart = givenAmount / tenure;
+        final double interestPartPerDue = preInterest / tenure;
+        final double totalDuePerDue = principalPart + interestPartPerDue;
 
-      final double principalPart = givenLoan / totalPeriods;
-      final double interestPartPerDue = preInterest / totalPeriods;
-      final double totalDuePerDue = principalPart + interestPartPerDue;
-
-      setState(() {
-        preIntAmountController.text = preInterest.toStringAsFixed(2);
-        givenAmountController.text = givenLoan.toStringAsFixed(2);
-        principalPartController.text = principalPart.toStringAsFixed(2);
-        interestPartController.text = interestPartPerDue.toStringAsFixed(2);
-        totalDueController.text = totalDuePerDue.toStringAsFixed(2);
-      });
+        setState(() {
+          interestController.text = interestRate.toStringAsFixed(2);
+          preIntAmountController.text = preInterest.toStringAsFixed(2);
+          principalPartController.text = principalPart.toStringAsFixed(2);
+          interestPartController.text = interestPartPerDue.toStringAsFixed(2);
+          totalDueController.text = totalDuePerDue.toStringAsFixed(2);
+        });
+      } else {
+        // Clear calculated fields if validation fails
+        setState(() {
+          interestController.clear();
+          preIntAmountController.clear();
+          principalPartController.clear();
+          interestPartController.clear();
+          totalDueController.clear();
+        });
+      }
     }
   }
 
@@ -143,52 +150,62 @@ class _CreateLoanState extends State<CreateLoan> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getCurrentLocation();
+      if (widget.isBlank == false) {
+        fetchData();
+      }
     });
+
     nameCntrlr.text = widget.name ?? '';
     phoneCntrlr.text = widget.pno ?? '';
     lineCntrlr.text = widget.line ?? '';
     areaCntrlr.text = widget.area ?? '';
+    cidCntrlr.text = widget.cid ?? '';
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-    // List<String> uniqueLines = createLoanCntrlr.lineList.toList();
     List<String> uniqueAreas = createLoanCntrlr.areaList.toSet().toList();
     final lineNames =
         createLoanCntrlr.lineList.map((e) => e.name).toSet().toList();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-          toolbarHeight: 8.h,
-          backgroundColor: Colors.indigo.shade900,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          title: Text(
-            "Create Loan",
-            style: TextStyle(
-              fontSize: 15.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+        toolbarHeight: 8.h,
+        backgroundColor: Colors.indigo.shade900,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Create Loan",
+          style: TextStyle(
+            fontSize: 15.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
-          leading: widget.isBlank == true
-              ? IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () {
-                    Get.back();
-                  },
-                )
-              : IconButton(
-                  icon: Icon(Icons.home, color: Colors.white),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DashboardScree3()));
-                  },
-                )),
+        ),
+        leading: widget.isBlank == true
+            ? IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Get.back();
+                },
+              )
+            : IconButton(
+                icon: Icon(Icons.home, color: Colors.white),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DashboardScree3()),
+                  );
+                },
+              ),
+      ),
       body: isloading
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -199,25 +216,7 @@ class _CreateLoanState extends State<CreateLoan> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // SizedBox(height: 2.h),
-                      // Text(
-                      //   'Profile',
-                      //   style: TextStyle(
-                      //       fontSize: 16.sp, fontWeight: FontWeight.w500),
-                      // ),
-                      // SizedBox(
-                      //   height: 1.h,
-                      // ),
-                      // Center(
-                      //     child: ClipRRect(
-                      //         borderRadius: BorderRadius.circular(10.sp),
-                      //         child: Image.network(
-                      //           'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
-                      //           height: 20.h,
-                      //         ))),
-                      SizedBox(
-                        height: 2.h,
-                      ),
+                      SizedBox(height: 2.h),
                       widget.isBlank == false
                           ? DropdownButtonFormField<String>(
                               value: lineNames.contains(selectedValue)
@@ -226,12 +225,14 @@ class _CreateLoanState extends State<CreateLoan> {
                               decoration: InputDecoration(
                                 labelText: 'Select Line',
                                 focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.indigo.shade900),
-                                    borderRadius: BorderRadius.circular(10)),
+                                  borderSide:
+                                      BorderSide(color: Colors.indigo.shade900),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                                 border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(10)),
+                                  borderSide: BorderSide(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 16),
                               ),
@@ -249,10 +250,9 @@ class _CreateLoanState extends State<CreateLoan> {
                                 });
                                 await createLoanCntrlr.getArea(line: newValue);
                                 setState(() {
-                                  createLoanCntrlr.areaList = createLoanCntrlr
-                                      .areaList
+                                  uniqueAreas = createLoanCntrlr.areaList
                                       .toSet()
-                                      .toList(); // Deduplicate area list
+                                      .toList();
                                 });
                               },
                             )
@@ -260,9 +260,7 @@ class _CreateLoanState extends State<CreateLoan> {
                               label: 'Line',
                               controller: lineCntrlr,
                               readOnly: true),
-                      SizedBox(
-                        height: 1.h,
-                      ),
+                      SizedBox(height: 1.h),
                       widget.isBlank == false
                           ? DropdownButtonFormField<String>(
                               value: uniqueAreas.contains(selectedArea)
@@ -271,12 +269,14 @@ class _CreateLoanState extends State<CreateLoan> {
                               decoration: InputDecoration(
                                 labelText: 'Select Area',
                                 focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.indigo.shade900),
-                                    borderRadius: BorderRadius.circular(10)),
+                                  borderSide:
+                                      BorderSide(color: Colors.indigo.shade900),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                                 border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black),
-                                    borderRadius: BorderRadius.circular(10)),
+                                  borderSide: BorderSide(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 12, vertical: 16),
                               ),
@@ -296,134 +296,118 @@ class _CreateLoanState extends State<CreateLoan> {
                               controller: areaCntrlr,
                               label: 'Area',
                               readOnly: true),
-                      SizedBox(
-                        height: 1.h,
-                      ),
+                      SizedBox(height: 1.h),
                       buildTextFormField(
                           label: 'Name',
                           controller: nameCntrlr,
                           readOnly: true),
-
                       buildTextFormField(
-                          label: 'Phone No',
-                          keyboardType: TextInputType.number,
-                          autoValidate: AutovalidateMode.onUserInteraction,
-                          controller: phoneCntrlr,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter phone number';
-                            } else if (!RegExp(r'^[6-9]\d{9}$')
-                                .hasMatch(value)) {
-                              return 'Enter a valid 10-digit mobile number';
-                            }
-                            return null;
-                          },
+                        label: 'Phone No',
+                        keyboardType: TextInputType.number,
+                        autoValidate: AutovalidateMode.onUserInteraction,
+                        controller: phoneCntrlr,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter phone number';
+                          } else if (!RegExp(r'^[6-9]\d{9}$').hasMatch(value)) {
+                            return 'Enter a valid 10-digit mobile number';
+                          }
+                          return null;
+                        },
+                        readOnly: true),
+                      buildTextFormField(
+                          label: 'cid',
+                          controller: cidCntrlr,
                           readOnly: true),
-
-                      // SizedBox(
-                      //   height: 2.h,
-                      // ),
-                      // buildTextFormField(
-                      //   maxLines: 4,
-                      //   controller: addressCntrlr,
-                      //   label: 'Address',
-                      //   // validator: (value) {
-                      //   //   if (value == null || value.isEmpty) {
-                      //   //     return 'Field should not empty';
-                      //   //   }
-                      //   // },
-                      // ),
-                      // buildTextFormField(
-                      //   label: 'Line Number',
-                      //   // validator: (value) {
-                      //   //   if (value == null || value.isEmpty) {
-                      //   //     return 'Field should not empty';
-                      //   //   }
-                      //   // }),
-                      // ),
-                      // buildTextFormField(
-                      //     label: 'Latitude', controller: _latitudeController),
-                      // buildTextFormField(
-                      //     label: 'Longitude', controller: _longitudeController),
-                      // buildTextFormField(
-                      //     autoValidate: AutovalidateMode.onUserInteraction,
-                      //     label: 'Aadhaar Number',
-                      //     controller: aadharcntrlr),
                       SizedBox(height: 1.h),
-
-                      SizedBox(height: 1.h),
-
-                      _buildSectionTitle("Loan Details"),
+                      Text(
+                        "Loan Details",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                       SizedBox(height: 2.h),
                       buildDropdownField(),
                       buildTextFormFieldWithController(
-                          "Loan Amount", loanAmountController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                        return null;
-                      }),
+                        "Loan Amount",
+                        loanAmountController,
+                        (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Field should not be empty';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.number,
+                      ),
                       buildTextFormFieldWithController(
-                          "Interest%", interestController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                        return null;
-                      }),
+                        "Interest%",
+                        interestController,
+                        (value) => null,
+                        readOnly: true,
+                      ),
                       buildTextFormFieldWithController(
-                          "Given Amount", givenAmountController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                        return null;
-                      }),
+                        "Given Amount",
+                        givenAmountController,
+                        (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Field should not be empty';
+                          }
+                          final loanAmount =
+                              double.tryParse(loanAmountController.text) ?? 0.0;
+                          final givenAmount = double.tryParse(value) ?? 0.0;
+                          if (givenAmount >= loanAmount) {
+                            return 'Given Amount must be less than Loan Amount';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.number,
+                      ),
                       buildTextFormFieldWithController(
-                          "Repayment Period", tenureController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                        return null;
-                      }),
+                        "Repayment Period",
+                        tenureController,
+                        (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Field should not be empty';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.number,
+                      ),
                       buildTextFormFieldWithController(
-                          "Pre-Interest Amount", preIntAmountController,
-                          (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                        return null;
-                      }),
+                        "Pre-Interest Amount",
+                        preIntAmountController,
+                        (value) => null,
+                        readOnly: true,
+                      ),
                       buildTextFormFieldWithController(
-                          "Principal Part", principalPartController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                        return null;
-                      }),
+                        "Principal Part",
+                        principalPartController,
+                        (value) => null,
+                        readOnly: true,
+                      ),
                       buildTextFormFieldWithController(
-                          "Interest Part", interestPartController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                        return null;
-                      }),
+                        "Interest Part",
+                        interestPartController,
+                        (value) => null,
+                        readOnly: true,
+                      ),
                       buildTextFormFieldWithController(
-                          "Total Due Amount", totalDueController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                        return null;
-                      }),
+                        "Total Due Amount",
+                        totalDueController,
+                        (value) => null,
+                        readOnly: true,
+                      ),
                       DropdownButtonFormField<String>(
                         value: selectedPaymentMode,
                         decoration: InputDecoration(
                           labelText: 'Select Payment Mode',
                           focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.indigo.shade900),
-                              borderRadius: BorderRadius.circular(10)),
+                            borderSide:
+                                BorderSide(color: Colors.indigo.shade900),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(10)),
+                            borderSide: BorderSide(color: Colors.black),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 12, vertical: 16),
                         ),
@@ -438,87 +422,113 @@ class _CreateLoanState extends State<CreateLoan> {
                             selectedPaymentMode = newValue;
                           });
                         },
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please select payment mode';
+                          }
+                          return null;
+                        },
                       ),
-                      SizedBox(
-                        height: 2.h,
-                      ),
+                      SizedBox(height: 2.h),
                       buildTextFormFieldWithController(
-                          "Remarks", remarksController, (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Field should not empty';
-                        }
-                      }, isMultiline: true),
-                      SizedBox(
-                        height: 1.h,
+                        "Remarks",
+                        remarksController,
+                        (value) => null,
+                        isMultiline: true,
                       ),
+                      SizedBox(height: 2.h),
                       Center(
                         child: Bounce(
                           duration: Duration(milliseconds: 300),
                           onTap: () async {
                             if (_formKey.currentState!.validate()) {
-                              await Future.delayed(
-                                  Duration(seconds: 2)); // Wait for 2 seconds
-
-                              final SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              var scode = await prefs.getString('Scode');
-                              var mfin = await prefs.getString('Mfin');
-                              Map<String, dynamic> data = {
-                                "loantype": selectedLoanType,
-                                "totalhpamt": loanAmountController.value.text,
-                                "interest": interestController.value.text,
-                                "inter": interestPartController.value.text,
-                                "hpamount": givenAmountController.value.text,
-                                "duemnt": duescontroller.value.text,
-                                "dueamt": principalPartController.value.text,
-                                "name": nameCntrlr.value.text,
-                                "pno": phoneCntrlr.value.text,
-                                "area": selectedArea,
-                                "model": selectedValue,
-                                "lat": _latitudeController.text,
-                                "lang": _longitudeController.text,
-                                "mfin": mfin,
-                                "scode": scode
-                              };
                               showDialog(
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (_) => Center(
-                                    child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                )),
+                                  child: CircularProgressIndicator(
+                                    color: Colors.indigo.shade900,
+                                  ),
+                                ),
                               );
-                              await Future.delayed(Duration(seconds: 2));
-                              Navigator.pop(context);
-                              await createLoanCntrlr.createLoan(data: data);
 
-                              // Hide the loader
+                              final SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              var scode = prefs.getString('Scode');
+                              var mfin = prefs.getString('Mfin');
 
-                              // Clear form fields
-                              interestController.clear();
-                              nameCntrlr.clear();
-                              interestPartController.clear();
-                              givenAmountController.clear();
-                              loanAmountController.clear();
-                              duescontroller.clear();
-                              principalPartController.clear();
-                              phoneCntrlr.clear();
-                              remarksController.clear();
-                              selectedArea = null;
+                              Map<String, dynamic> data = {
+                                "loantype": selectedLoanType,
+                                'cid': cidCntrlr.text,
+                                "totalhpamt": loanAmountController.text,
+                                "interest": interestController.text,
+                                "inter": interestPartController.text,
+                                "hpamount": givenAmountController.text,
+                                "duemnt": tenureController.text,
+                                "dueamt": principalPartController.text,
+                                "name": nameCntrlr.text,
+                                "pno": phoneCntrlr.text,
+                                "area": widget.isBlank == false
+                                    ? selectedArea
+                                    : areaCntrlr.text,
+                                "model": widget.isBlank == false
+                                    ? selectedValue
+                                    : lineCntrlr.text,
+                                "lat": _latitudeController.text,
+                                "lang": _longitudeController.text,
+                                "mfin": mfin,
+                                "scode": scode,
+                                "paymode": selectedPaymentMode,
+                                "remarks": remarksController.text,
+                              };
+
+                              try {
+                                await createLoanCntrlr.createLoan(data: data);
+                                Navigator.pop(context); // Close loading dialog
+                                Get.snackbar(
+                                  "Success",
+                                  "Loan created successfully",
+                                  backgroundColor: Colors.green,
+                                  colorText: Colors.white,
+                                );
+                                // Clear form after successful submission
+                                loanAmountController.clear();
+                                givenAmountController.clear();
+                                tenureController.clear();
+                                remarksController.clear();
+                                setState(() {
+                                  selectedPaymentMode = null;
+                                  interestController.clear();
+                                  preIntAmountController.clear();
+                                  principalPartController.clear();
+                                  interestPartController.clear();
+                                  totalDueController.clear();
+                                });
+                              } catch (e) {
+                                Navigator.pop(context); // Close loading dialog
+                                Get.snackbar(
+                                  "Error",
+                                  "Failed to create loan: $e",
+                                  backgroundColor: Colors.red,
+                                  colorText: Colors.white,
+                                );
+                              }
                             }
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20.w, vertical: 1.5.h),
                             decoration: BoxDecoration(
-                                color: Colors.indigo.shade900,
-                                borderRadius: BorderRadius.circular(10.sp)),
+                              color: Colors.indigo.shade900,
+                              borderRadius: BorderRadius.circular(10.sp),
+                            ),
                             child: Text(
                               'Submit',
                               style: TextStyle(
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white),
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
@@ -539,14 +549,15 @@ class _CreateLoanState extends State<CreateLoan> {
     );
   }
 
-  Widget buildTextFormField(
-      {String? label,
-      int? maxLines,
-      TextEditingController? controller,
-      String? Function(String?)? validator,
-      AutovalidateMode? autoValidate,
-      bool readOnly = false,
-      TextInputType? keyboardType}) {
+  Widget buildTextFormField({
+    String? label,
+    int? maxLines,
+    TextEditingController? controller,
+    String? Function(String?)? validator,
+    AutovalidateMode? autoValidate,
+    bool readOnly = false,
+    TextInputType? keyboardType,
+  }) {
     return Padding(
       padding: EdgeInsets.only(bottom: 15),
       child: TextFormField(
@@ -558,24 +569,36 @@ class _CreateLoanState extends State<CreateLoan> {
         readOnly: readOnly,
         decoration: InputDecoration(
           labelText: label,
-          focusedBorder:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(10.sp)),
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(10.sp)),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.indigo.shade900),
+            borderRadius: BorderRadius.circular(10.sp),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.sp),
+          ),
         ),
       ),
     );
   }
 
-  Widget buildTextFormFieldWithController(String label,
-      TextEditingController controller, String? Function(String?)? validator,
-      {bool isMultiline = false}) {
+  Widget buildTextFormFieldWithController(
+    String label,
+    TextEditingController controller,
+    String? Function(String?)? validator, {
+    bool isMultiline = false,
+    TextInputType keyboardType = TextInputType.text,
+    bool readOnly = false,
+    FocusNode? focusNode,
+  }) {
     return Padding(
       padding: EdgeInsets.only(bottom: 15),
       child: TextFormField(
         controller: controller,
         validator: validator,
         maxLines: isMultiline ? 3 : 1,
+        keyboardType: keyboardType,
+        readOnly: readOnly,
+        focusNode: focusNode,
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(),
@@ -606,8 +629,8 @@ class _CreateLoanState extends State<CreateLoan> {
             } else if (selectedLoanType == "MONTHLY") {
               tenureController.text = "12";
             }
+            calculateLoanDetails();
           });
-          logger.e(selectedLoanType);
         },
         decoration: InputDecoration(
           labelText: "Loan Type",

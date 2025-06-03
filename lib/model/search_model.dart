@@ -145,6 +145,7 @@ class searchModel {
   String? ddd;
   String? preinc;
   String? loantype;
+  String? pendingamount;
   String? msg;
 
   searchModel(
@@ -294,6 +295,7 @@ class searchModel {
       this.ddd,
       this.preinc,
       this.loantype,
+      this.pendingamount,
       this.msg});
 
   searchModel.fromJson(Map<String, dynamic> json) {
@@ -443,6 +445,7 @@ class searchModel {
     ddd = json['ddd'];
     preinc = json['preinc'];
     loantype = json['loantype'];
+    pendingamount = json['pendingamount'];
     msg = json['msg'];
   }
 
@@ -594,6 +597,7 @@ class searchModel {
     data['ddd'] = this.ddd;
     data['preinc'] = this.preinc;
     data['loantype'] = this.loantype;
+    data['pendingamount'] = this.pendingamount;
     data['msg'] = this.msg;
     return data;
   }

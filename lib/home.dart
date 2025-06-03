@@ -1,43 +1,42 @@
-import 'package:get/get.dart';
-import 'package:sizer/sizer.dart';
-import 'package:info_fina/view.dart';
-import 'package:info_fina/Trail.dart';
-import 'package:flutter/material.dart';
-import 'package:info_fina/contra.dart';
-import 'package:get/route_manager.dart';
-import 'package:info_fina/Balance.dart';
-import 'package:info_fina/Voucher.dart';
-import 'package:info_fina/statement.dart';
-import 'package:info_fina/auth/Login.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:get/get.dart';
+import 'package:info_fina/Balance.dart';
 import 'package:info_fina/Create_loan.dart';
-import 'package:info_fina/profit_loss.dart';
+import 'package:info_fina/CustomersList/customer_search.dart';
 import 'package:info_fina/New_employee.dart';
 import 'package:info_fina/New_employee2.dart';
-import 'package:info_fina/add_area/add_area.dart';
-import 'package:info_fina/add_line/add_line.dart';
-import 'package:info_fina/view_loan/view_loan.dart';
-import 'package:info_fina/line_view/line_list.dart';
-import 'package:info_fina/view_loan/search_loan.dart';
-import 'package:info_fina/view_areas/view_areas.dart';
-import 'package:info_fina/bill_report/bill_report.dart';
-import 'package:info_fina/collections/collections.dart';
-import 'package:info_fina/get_customer/get_customer.dart';
-import 'package:info_fina/add_customer/add_customer.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:info_fina/CustomersList/customer_search.dart';
+import 'package:info_fina/Trail.dart';
+import 'package:info_fina/Voucher.dart';
+import 'package:info_fina/active_report/active_report_dc.dart';
 import 'package:info_fina/active_report/active_report_mc.dart';
 import 'package:info_fina/active_report/active_report_wc.dart';
-import 'package:info_fina/active_report/active_report_dc.dart';
-import 'package:info_fina/controller/dashboard_controller.dart';
-import 'package:info_fina/statement_report/statement_report.dart';
+import 'package:info_fina/add_area/add_area.dart';
+import 'package:info_fina/add_customer/add_customer.dart';
+import 'package:info_fina/add_line/add_line.dart';
+import 'package:info_fina/ai_screen/ai_screen.dart';
+import 'package:info_fina/auth/Login.dart';
+import 'package:info_fina/bill_report/bill_report.dart';
+import 'package:info_fina/closedloans_report/closed_loans_dc.dart';
 import 'package:info_fina/closedloans_report/closed_loans_mc.dart';
 import 'package:info_fina/closedloans_report/closed_loans_wc.dart';
-import 'package:info_fina/closedloans_report/closed_loans_dc.dart';
-import 'package:info_fina/outstanding_report/outstanding_report.dart';
-import 'package:info_fina/pre_loan_processing/pre_loan_processing.dart';
-import 'package:info_fina/monthly_loan_create/monthly_create_loan.dart';
+import 'package:info_fina/collection_search/collection_search.dart';
 import 'package:info_fina/controller/create_loans/create_loan_controller.dart';
+import 'package:info_fina/controller/dashboard_controller.dart';
+import 'package:info_fina/get_customer/get_customer.dart';
+import 'package:info_fina/line_view/line_list.dart';
+import 'package:info_fina/monthly_loan_create/monthly_create_loan.dart';
+import 'package:info_fina/outstanding_report/outstanding_report.dart';
+import 'package:info_fina/pre_loan_processing/pre_loan_processing.dart' show PreLoanProccessing;
+import 'package:info_fina/profit_loss.dart';
+import 'package:info_fina/statement.dart';
+import 'package:info_fina/statement_report/statement_report.dart';
+import 'package:info_fina/view.dart';
+import 'package:info_fina/view_areas/view_areas.dart';
+import 'package:info_fina/view_loan/search_loan.dart';
+import 'package:sizer/sizer.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+// ... other imports remain the same ...
 
 class DashboardScree3 extends StatefulWidget {
   @override
@@ -48,7 +47,7 @@ var dashboardController = Get.put(DashboardController());
 var createLoanCntrlr = Get.put(CreateLoanController());
 
 class _DashboardScree3State extends State<DashboardScree3> {
-  int _selectedIndex = 3; // Tracks the selected tab index
+  int _selectedIndex = 3;
   bool isLoading = false;
   bool _showCollectionNew = false;
 
@@ -91,48 +90,51 @@ class _DashboardScree3State extends State<DashboardScree3> {
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final List<Map<String, dynamic>> dashboardItems = [
-    {
-      'title': "Active Loans",
-      'value':
-          "${dashboardController.loansDetail.value.dailyLoans ?? '0'}/${dashboardController.loansDetail.value.weeklyLoans ?? '0'}/${dashboardController.loansDetail.value.monthlyLoans ?? '0'}" ??
-              '0',
-      'color': Colors.orange,
-      'icon': Icons.check_circle
-    },
-    {
-      'title': "Closed Loans",
-      'value':
-          "${dashboardController.loansDetail.value.dailyClosedLoans ?? '0'}/${dashboardController.loansDetail.value.weeklyClosedLoans ?? '0'}/${dashboardController.loansDetail.value.monthlyClosedLoans ?? '0'}",
-      'color': Colors.redAccent,
-      'icon': Icons.cancel
-    },
-    {
-      'title': "Total Loan Amount",
-      'value': "${dashboardController.loansDetail.value.totalHpAmount ?? 0} ",
-      'color': Colors.purple,
-      'icon': Icons.attach_money
-    },
-    {
-      'title': "Principal Balance",
-      'value': "${dashboardController.loansDetail.value.principalBalance ?? 0}",
-      'color': Colors.blue,
-      'icon': Icons.account_balance
-    },
-    {
-      'title': "Closed FD",
-      'value': "${dashboardController.loansDetail.value.dailyClosedLoans ?? 0}",
-      'color': Colors.teal,
-      'icon': Icons.speaker_notes
-    },
-    {
-      'title': "Loan Amount",
-      'value':
-          "${dashboardController.loansDetail.value.dailyLoansAmount ?? '0'}/${dashboardController.loansDetail.value.weeklyLoansAmount ?? '0'}/${dashboardController.loansDetail.value.weeklyLoansAmount ?? '0'}",
-      'color': Colors.green,
-      'icon': Icons.check
-    },
-  ];
+
+  // FIX: Convert to getter to recompute when controller changes
+  List<Map<String, dynamic>> get dashboardItems {
+    return [
+      {
+        'title': "Active Loans",
+        'value':
+            "${dashboardController.loansDetail.value.dailyLoans ?? '0'}/${dashboardController.loansDetail.value.weeklyLoans ?? '0'}/${dashboardController.loansDetail.value.monthlyLoans ?? '0'}",
+        'color': Colors.orange,
+        'icon': Icons.check_circle
+      },
+      {
+        'title': "Closed Loans",
+        'value':
+            "${dashboardController.loansDetail.value.dailyClosedLoans ?? '0'}/${dashboardController.loansDetail.value.weeklyClosedLoans ?? '0'}/${dashboardController.loansDetail.value.monthlyClosedLoans ?? '0'}",
+        'color': Colors.redAccent,
+        'icon': Icons.cancel
+      },
+      {
+        'title': "Total Loan Amount",
+        'value': "${dashboardController.loansDetail.value.totalHpAmount?.toStringAsFixed(2) ?? '0.00'}",
+        'color': Colors.purple,
+        'icon': Icons.attach_money
+      },
+      {
+        'title': "Principal Balance",
+        'value': "${dashboardController.loansDetail.value.principalBalance?.toStringAsFixed(2) ?? '0.00'}",
+        'color': Colors.blue,
+        'icon': Icons.account_balance
+      },
+      {
+        'title': "Closed FD",
+        'value': "${dashboardController.loansDetail.value.dailyClosedLoans ?? '0'}",
+        'color': Colors.teal,
+        'icon': Icons.speaker_notes
+      },
+      {
+        'title': "Loan Amount",
+        'value':
+            "${dashboardController.loansDetail.value.dailyLoansAmount ?? '0'}/${dashboardController.loansDetail.value.weeklyLoansAmount ?? '0'}/${dashboardController.loansDetail.value.monthlyLoansAmount ?? '0'}",
+        'color': Colors.green,
+        'icon': Icons.check
+      },
+    ];
+  }
 
   @override
   void initState() {
@@ -189,7 +191,10 @@ class _DashboardScree3State extends State<DashboardScree3> {
                             fontWeight: FontWeight.w600,
                             color: Colors.black45),
                       ),
-                      Icon(Icons.refresh, color: Colors.black45, size: 22),
+                      IconButton(
+                        icon: Icon(Icons.refresh, color: Colors.black45, size: 22),
+                        onPressed: fetchData,
+                      ),
                     ],
                   ),
                 ],
@@ -197,13 +202,16 @@ class _DashboardScree3State extends State<DashboardScree3> {
             ),
           ),
           SizedBox(height: 1.h),
-          Column(
-            children: dashboardItems.map((item) {
-              return MetricTile(
-                item: item,
-              );
-            }).toList(),
-          ),
+          // FIX: Wrap in Obx to react to controller changes
+          Obx(() {
+            return Column(
+              children: dashboardItems.map((item) {
+                return MetricTile(
+                  item: item,
+                );
+              }).toList(),
+            );
+          }),
           SizedBox(height: 20),
         ],
       ),
@@ -218,29 +226,25 @@ class _DashboardScree3State extends State<DashboardScree3> {
       backgroundColor: Colors.white,
       extendBody: true,
       drawer: CustomDrawer(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        height: 15.h,
-        width: 17.w,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.indigo.shade900, width: 3),
-        ),
-        child: FloatingActionButton(
-          onPressed: _openCollectionNew,
-          backgroundColor: Colors.white,
-          elevation: 12,
-          shape: CircleBorder(),
-          child: Icon(Icons.search, size: 40, color: Colors.indigo),
-        ),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AiScreen()));
+          },
+          backgroundColor: Colors.indigo.shade900,
+          child: Image.asset(
+            'asset/ai.png',
+            color: Colors.white,
+            height: 4.5.h,
+          )),
       body: _showCollectionNew
           ? WillPopScope(
               onWillPop: () async {
                 _closeCollectionNew();
                 return false;
               },
-              child: CollectionNew(),
+              child: collectionSearch(),
             )
           : _selectedIndex == 3
               ? _DashboardContentWithAppBar(
@@ -398,37 +402,6 @@ class CustomDrawer extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
-              Positioned(
-                bottom: 9,
-                child: Container(
-                  width: 250,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.white70,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    style: TextStyle(fontSize: 14),
-                    decoration: InputDecoration(
-                      hintText: "Search A/C No or Loan No",
-                      hintStyle: TextStyle(color: Colors.black, fontSize: 12),
-                      border: InputBorder.none,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                      suffixIcon:
-                          Icon(Icons.search, color: Colors.black, size: 20),
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
           Expanded(
@@ -479,39 +452,6 @@ class CustomDrawer extends StatelessWidget {
                   customListTile("Income Summary Report"),
                   customListTile("Profit/Loss Report"),
                 ]),
-
-                // customExpansionTile(
-                //     Icons.pending_actions, "Reports", Colors.cyan, [
-                //   customListTile("Active Loan List", [
-                //     "|  Active Loan List - Daily",
-                //     "|  Active Loan List-Weekly",
-                //     "|  Active Loan List-EMI"
-                //   ]),
-                //   customListTile("Closed Loan Reports", [
-                //     "|  Closed Loan List - Daily",
-                //     "|  Closed Loan List - weekly",
-                //     "|  Closed Loan List - EMI"
-                //   ]),
-
-                //   customListTile("Outstanding Report"),
-                //   customListTile("Statement Report"),
-                //   customListTile("Bill Report"),
-                //   customListTile("Total Loan  Report"),
-                //   customListTile("Today Due Report"),
-                //   customListTile("COllection or Billing Report"),
-                //   customListTile("Delayed Paid Report"),
-                //   customListTile("On date paid Report"),
-                //   customListTile("Interest pending Report"),
-                //  customListTile("Customer Report"),
-                //   customListTile("Due analysis Report"),
-                //   customListTile("Line Wise pending Report"),
-                //   customListTile("Loan against collection Report"),
-                //   customListTile("Customer status report Report"),
-                //   customListTile(" Investment Report"),
-                //   customListTile("Expense Summary Report"),
-                //   customListTile("Income Summary Report"),
-                //   customListTile("Profit/Loss Report"),
-                // ]),
               ],
             ),
           ),
@@ -628,7 +568,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   );
                 }
-                return SizedBox.shrink(); // fallback for unexpected types
+                return SizedBox.shrink();
               }).toList(),
             ],
           ],
@@ -638,8 +578,7 @@ class CustomDrawer extends StatelessWidget {
   }
 
   Widget customListTileAlwaysExpanded(IconData icon, String title,
-      [List<dynamic>? subItems] // Accept both String and Widget
-      ) {
+      [List<dynamic>? subItems]) {
     bool isHovered = false;
 
     return StatefulBuilder(
@@ -778,6 +717,8 @@ class CustomDrawer extends StatelessWidget {
     } else if (title == 'View Customer') {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => GetCustomer()));
+    } else if (title == 'Create Customer') {
+      Get.to(() => AddCustomer());
     }
   }
 }

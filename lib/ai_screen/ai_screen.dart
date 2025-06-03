@@ -83,18 +83,18 @@ class _AiScreenState extends State<AiScreen> {
           icon: Icon(
             Icons.arrow_back_ios_new,
             color: Colors.white,
-          ), 
+          ),
         ),
         backgroundColor: Colors.indigo.shade900,
         title: Row(
           children: [
-            // ClipRRect(
-            //   borderRadius: BorderRadius.circular(13.sp),
-            //   child: Image.asset(
-            //     'assets/images/ilogo2.jpg',
-            //     height: 4.h,
-            //   ),
-            // ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(13.sp),
+              child: Image.asset(
+                'asset/ilogo2.jpg',
+                height: 4.h,
+              ),
+            ),
             SizedBox(
               width: 5.w,
             ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/material.dart';
@@ -64,8 +65,8 @@ class CreateLoanController extends GetxController {
 
   Future<void> createLine(
       {String? name, String? loanType, String? badDays}) async {
-              final SharedPreferences prefs = await SharedPreferences.getInstance();
- var scode = await prefs.getString('Scode');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var scode = await prefs.getString('Scode');
     var mfin = await prefs.getString('Mfin');
     Map<String, dynamic> data = {
       "user": "createline",
@@ -96,8 +97,8 @@ class CreateLoanController extends GetxController {
   }
 
   Future<void> createArea({String? line, String? area}) async {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
- var scode = await prefs.getString('Scode');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var scode = await prefs.getString('Scode');
     var mfin = await prefs.getString('Mfin');
     Map<String, dynamic> data = {
       "user": "createarea",
@@ -110,8 +111,10 @@ class CreateLoanController extends GetxController {
     Map<String, dynamic> response =
         await ApiServices.post(slug: ApiConstant.CREATEAREA, body: data);
     if (response['success']) {
+      logger.e(response);
       BotToast.showText(
         text: response['message'],
+        
         contentColor: Colors.green.withOpacity(0.8),
         textStyle: TextStyle(color: Colors.white, fontSize: 14.sp),
       );
@@ -133,6 +136,7 @@ class CreateLoanController extends GetxController {
         await ApiServices.post(slug: ApiConstant.GETLINES, body: data);
     if (response['success']) {
       logger.e(response['message']);
+      logger.e(response);
       lineList.value = List<Map<String, dynamic>>.from(response['subarea'])
           .map((json) => LineModel.fromJson(json))
           .toList();
@@ -161,7 +165,9 @@ class CreateLoanController extends GetxController {
     Map<String, dynamic> response =
         await ApiServices.post(slug: ApiConstant.CREATELOAN, body: data);
     if (response['success']) {
-    Get.to(() => SuccessScreen(success: 1,));
+      Get.to(() => SuccessScreen(
+            success: 1,
+          ));
       logger.e(response);
     } else {
       BotToast.showText(
@@ -179,8 +185,8 @@ class CreateLoanController extends GetxController {
     String? loantype,
   }) async {
     isLopading.value = true;
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
- var scode = await prefs.getString('Scode');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var scode = await prefs.getString('Scode');
     var mfin = await prefs.getString('Mfin');
     Map<String, dynamic> data = {
       "user": "viewloan",
@@ -206,13 +212,13 @@ class CreateLoanController extends GetxController {
   }
 
   Future<void> fetchLineAreaData() async {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
- var scode = await prefs.getString('Scode');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var scode = await prefs.getString('Scode');
     var mfin = await prefs.getString('Mfin');
     try {
       Map<String, dynamic> response = await ApiServices.post(
         slug: ApiConstant.ALLAREA,
-        body: {"user": "allareas", "mfin":mfin, "scode": scode},
+        body: {"user": "allareas", "mfin": mfin, "scode": scode},
       );
 
       if (response['success'] == true) {
@@ -236,8 +242,8 @@ class CreateLoanController extends GetxController {
   }
 
   Future<void> deletLine({String? line}) async {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
- var scode = await prefs.getString('Scode');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var scode = await prefs.getString('Scode');
     var mfin = await prefs.getString('Mfin');
     Map<String, dynamic> data = {
       "user": "deleteline",
@@ -266,8 +272,8 @@ class CreateLoanController extends GetxController {
   }
 
   Future<void> deleteArea({String? line, String? area}) async {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
- var scode = await prefs.getString('Scode');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var scode = await prefs.getString('Scode');
     var mfin = await prefs.getString('Mfin');
     Map<String, dynamic> data = {
       "user": "deleteline",
@@ -300,8 +306,8 @@ class CreateLoanController extends GetxController {
     String? hpl,
     String? loanType,
   }) async {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
- var scode = await prefs.getString('Scode');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var scode = await prefs.getString('Scode');
     var mfin = await prefs.getString('Mfin');
     isLopading.value = true;
     Map<String, dynamic> data = {
@@ -329,8 +335,8 @@ class CreateLoanController extends GetxController {
   }
 
   Future<void> deleteCustomer({String? id}) async {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
- var scode = await prefs.getString('Scode');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var scode = await prefs.getString('Scode');
     var mfin = await prefs.getString('Mfin');
     Map<String, dynamic> data = {
       "user": "Custdelete",
@@ -359,8 +365,8 @@ class CreateLoanController extends GetxController {
   }
 
   Future<void> deleteLoan({String? id, String? loantype}) async {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
- var scode = await prefs.getString('Scode');
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var scode = await prefs.getString('Scode');
     var mfin = await prefs.getString('Mfin');
     Map<String, dynamic> data = {
       "user": "loandelete",
@@ -388,19 +394,19 @@ class CreateLoanController extends GetxController {
       );
     }
   }
-  Future<void> search()async{
-    Map<String,dynamic> data = {
-      
-    "user":"yes",
-    "hpl":"1",
-    "pno":"",
-    "area":"",
-    "name":"",
-    "line":"",
-    "scode":"ramu",
-    "mfin":"ramu"
 
+  Future<void> search() async {
+    Map<String, dynamic> data = {
+      "user": "yes",
+      "hpl": "1",
+      "pno": "",
+      "area": "",
+      "name": "",
+      "line": "",
+      "scode": "ramu",
+      "mfin": "ramu"
     };
-   Map<String,dynamic> response = await ApiServices.post(slug: ApiConstant.SEARCHAPI, body: data);
+    Map<String, dynamic> response =
+        await ApiServices.post(slug: ApiConstant.SEARCHAPI, body: data);
   }
 }
