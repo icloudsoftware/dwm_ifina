@@ -68,7 +68,7 @@ class _LineListPageState extends State<LinePage> {
         leading: GestureDetector(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => HomePage()));
+                MaterialPageRoute(builder: (context) => DashboardScree3()));
           },
           child: Icon(
             Icons.home,

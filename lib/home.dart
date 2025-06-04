@@ -38,15 +38,15 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // ... other imports remain the same ...
 
-class HomePage extends StatefulWidget {
+class DashboardScree3 extends StatefulWidget {
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<DashboardScree3> createState() => _DashboardScree3State();
 }
 
 var dashboardController = Get.put(DashboardController());
 var createLoanCntrlr = Get.put(CreateLoanController());
 
-class _HomePageState extends State<HomePage> {
+class _DashboardScree3State extends State<DashboardScree3> {
   int _selectedIndex = 3;
   bool isLoading = false;
   bool _showCollectionNew = false;

@@ -110,7 +110,7 @@ class _WeeklyCollectionsState extends State<WeeklyCollections> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()),
+              MaterialPageRoute(builder: (context) => DashboardScree3()),
             );
           },
         ),

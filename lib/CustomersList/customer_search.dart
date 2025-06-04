@@ -50,7 +50,7 @@ class _SearchCustomersState extends State<SearchCustomers> {
           )),
       appBar: AppBar(
         leading: IconButton(onPressed: (){
-          Get.to(() => HomePage());
+          Get.to(() => DashboardScree3());
         }, icon:Icon(Icons.home,size: 18.sp,color: Colors.white,)),
         title: Text(
           'Search Customers',

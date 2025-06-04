@@ -95,7 +95,7 @@ class _BalanceState extends State<Balance> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HomePage()));
+                            builder: (context) => DashboardScree3()));
                   },
                 ),
               ),
